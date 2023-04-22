@@ -37,6 +37,55 @@
   const stopButton = document.querySelector('#stop');
 
   //Your code goes here
+
+
+	// 1. Fill the voices dropdown with available voices.
+function populateVoices() {
+  voices = this.getVoices();
+  voicesDropdown.innerHTML = voices
+    .map(
+      voice =>
+        `<option value="${voice.name}">${voice.name} (${voice.lang})</option>`
+    )
+    .join('');
+}
+
+// 2. Set the default voice to the first option in the dropdown.
+function setDefaultVoice() {
+  msg.voice = voices.find(voice => voice.name === 'Alex');
+}
+
+// 3. Update the message object with the selected voice, pitch, rate, and text.
+function setVoice() {
+  msg.voice = voices.find(voice => voice.name === this.value);
+  toggleSpeak();
+}
+
+function setOption() {
+  msg[this.name] = this.value;
+  toggleSpeak();
+}
+
+// 4. Add an event listener to the speak button to start speaking the message.
+function toggleSpeak() {
+  speechSynthesis.cancel();
+  if (msg.text !== '') {
+    speechSynthesis.speak(msg);
+  }
+}
+
+// 5. Add an event listener to the stop button to stop speaking the message.
+function toggleStop() {
+  speechSynthesis.cancel();
+}
+
+// 6. Update the message object with the new pitch and rate values when they are changed.
+speechSynthesis.addEventListener('voiceschanged', populateVoices);
+voicesDropdown.addEventListener('change', setVoice);
+options.forEach(option => option.addEventListener('input', setOption));
+speakButton.addEventListener('click', toggleSpeak);
+stopButton.addEventListener('click', toggleStop);
+setDefaultVoice();
 </script>
 
 </body>
